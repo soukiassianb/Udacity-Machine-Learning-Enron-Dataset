@@ -25,7 +25,6 @@ features_list = ['poi',
                  'deferral_payments',
                  'restricted_stock_deferred',
                  'long_term_incentive',
-                 'restricted_stock',
                  'from_this_person_to_poi',
                  'shared_receipt_with_poi']
 
@@ -51,6 +50,12 @@ def clean_outliers(data_dict, feature, percentile):
 for feature in features_list[1:]:
     data_dict = clean_outliers(data_dict, feature, 2)
 
+
+# Delete Outliers
+data_dict.pop('TOTAL', 0)
+data_dict.pop('LOCKHART EUGENE E', 0)
+data_dict.pop('THE TRAVEL AGENCY IN THE PARK', 0)
+
 # Task 3: Create new feature(s)
 # Store to my_dataset for easy export below.
 my_dataset = data_dict
@@ -61,18 +66,15 @@ labels, features = targetFeatureSplit(data)
 features_train, features_test, labels_train, labels_test = \
     train_test_split(features, labels, test_size=0.3, random_state=42)
 
-
 # from sklearn.feature_selection import SelectKBest
 # from sklearn.feature_selection import chi2, f_classif
 # from sklearn import preprocessing
-
 
 # print(np.array(features_train).shape)
 # # features_train = SelectKBest(f_classif, k=2).fit_transform(features_train, labels_train)
 # features_train = preprocessing.scale(features_train)
 # features_test = preprocessing.scale(features_test)
 # print(features_train)
-
 
 # Task 4: Try a varity of classifiers
 # Please name your classifier clf for easy export below.
@@ -81,9 +83,8 @@ features_train, features_test, labels_train, labels_test = \
 # http://scikit-learn.org/stable/modules/pipeline.html
 
 # Provided to give you a starting point. Try a variety of classifiers.
-
 from sklearn.ensemble import RandomForestClassifier
-clf = RandomForestClassifier(n_estimators=40, criterion="gini")  # 0.918918918919
+clf = RandomForestClassifier(n_estimators=40)
 
 # Task 5: Tune your classifier to achieve better than .3 precision and recall
 # using our testing script. Check the tester.py script in the final project
@@ -95,7 +96,6 @@ clf = RandomForestClassifier(n_estimators=40, criterion="gini")  # 0.91891891891
 # Example starting point. Try investigating other evaluation techniques!
 
 clf.fit(features_train, labels_train)
-
 print(clf.score(features_test, labels_test))
 
 # Task 6: Dump your classifier, dataset, and features_list so anyone can
