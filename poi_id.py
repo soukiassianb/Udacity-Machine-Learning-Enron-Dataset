@@ -54,7 +54,7 @@ for feature in features_list[1:]:
 
 
 # Create new features
-for k, v in data_dict.items():
+for v in data_dict.values():
     from_poi_to_this_person = v["from_poi_to_this_person"]
     to_messages = v["to_messages"]
     from_this_person_to_poi = v["from_this_person_to_poi"]
@@ -78,12 +78,9 @@ data = featureFormat(my_dataset, features_list, sort_keys=True)
 labels, features = targetFeatureSplit(data)
 
 
-def doPCA(data, n_components):
-    pca = PCA(n_components=n_components)
-    pca.fit(data)
-    return pca
-
-pca = doPCA(features, 4)
+# PCA
+pca = PCA(n_components=4)
+pca.fit(features)
 features = pca.transform(features)
 
 features_train, features_test, labels_train, labels_test = \
@@ -102,22 +99,20 @@ def findRandomForestParameters():
         "min_samples_split": range(2, 4),
         "bootstrap": [True, False]
     }
-    grid_search = GridSearchCV(clf, params, n_jobs=-1, cv=2)
+    grid_search = GridSearchCV(clf, params, n_jobs=-1, cv=2, scoring='recall')
     grid_search.fit(features_train, labels_train)
     print grid_search.best_params_
 
+# findRandomForestParameters()
+
+
 # Load our classifier with parameters
 # determiend by findRandomForestParameters
-clf = RandomForestClassifier(max_features=3,
-                             min_samples_split=3,
-                             bootstrap=True,
+clf = RandomForestClassifier(max_features=4,
+                             min_samples_split=2,
+                             bootstrap=False,
                              criterion='entropy',
-                             n_estimators=28)
-# clf = RandomForestClassifier(n_estimators=40)
-
-# from sklearn.naive_bayes import GaussianNB
-# clf = GaussianNB()
-
+                             n_estimators=20)
 
 
 # fit our classifier
