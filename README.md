@@ -4,7 +4,7 @@
 
 **1. Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?  [relevant rubric items: “data exploration”, “outlier investigation”]**
 
-The goal of this project is to use the Enron Email Corpus Dataset and a few other data sources to build a Machine Learning Algorithm able to identify persons of interest (POI) in the Enron Scandal.
+The goal of this project is to use the Enron Email Corpus Dataset and related financial data to build a Machine Learning Algorithm able to identify persons of interest (POI) in the Enron Scandal.
 
 The Enron Email Corpus is one of the biggest dataset of email conversations openly available. It features conversations from executives of the Enron Corporation which were made available by the Federal Energy Regulatory Commission after the company's collapse.
 
