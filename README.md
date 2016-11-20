@@ -1,9 +1,5 @@
 # Identify Fraud from Enron email
 
-https://review.udacity.com/#!/rubrics/27/view
-https://docs.google.com/document/d/17-JwNQH1aRxtqMkJ6zpCL_68kh5F6uSbDXcJS26vZWY/pub
-
-
 ## Enron Submission Free-Response Questions
 
 **1. Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?  [relevant rubric items: “data exploration”, “outlier investigation”]**
@@ -19,6 +15,7 @@ Machine Learning is a good tool for such a project for at least two reasons:
 
 While preparing the dataset for the project I was able to identify a few outliers using data visualization. I also decided to use a script to remove other extreme values from the data (top and below 2% percentiles).
 
+___
 
 **2. What features did you end up using in your POI identifier, and what selection process did you use to pick them? Did you have to do any scaling? Why or why not? As part of the assignment, you should attempt to engineer your own feature that does not come ready-made in the dataset -- explain what feature you tried to make, and the rationale behind it. (You do not necessarily have to use it in the final analysis, only engineer and test it.) In your feature selection step, if you used an algorithm like a decision tree, please also give the feature importances of the features that you use, and if you used an automated feature selection function like SelectKBest, please report the feature scores and reasons for your choice of parameter values.  [relevant rubric items: “create new features”, “properly scale features”, “intelligently select feature”]**
 
@@ -36,6 +33,7 @@ I ran a simple decision tree and checked the score after adding and removing dif
 I tried feature scaling like standardization using scikit learn StandardScaler but did not gain precision, I however did gain a little precision using PCA with 4 components, which I decided to use for the final classifier.
 
 I created two features from_poi_ratio and to_poi_ratio which are respectively the fraction of messages received from POI among all messages received and the fraction of messages send to POI among all messages send.
+___
 
 **3. What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?  [relevant rubric item: “pick an algorithm”]
 What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm? (Some algorithms do not have parameters that you need to tune -- if this is the case for the one you picked, identify and briefly explain how you would have done it for the model that was not your final choice or a different model that does utilize parameter tuning, e.g. a decision tree classifier).  [relevant rubric item: “tune the algorithm”]
@@ -53,6 +51,7 @@ I got and used as a result:
 - 2 min_samples_split
 - 4 max_features
 
+___
 
 **4. Give at least 2 evaluation metrics and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance. [relevant rubric item: “usage of evaluation metrics”]**
 
