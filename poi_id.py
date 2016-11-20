@@ -10,15 +10,11 @@ from sklearn.cross_validation import train_test_split
 import matplotlib.pyplot as plt
 from operator import itemgetter
 import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.grid_search import GridSearchCV
+from sklearn.decomposition import PCA
 
-
-# Task 1: Select what features you'll use.
-# features_list is a list of strings, each of which is a feature name.
-# The first feature must be "poi".
- # financial features = ['salary', 'deferral_payments', 'total_payments', 'loan_advances', 'bonus', 'restricted_stock_deferred', 'deferred_income', 'total_stock_value', 'expenses', 'exercised_stock_options', 'other', 'long_term_incentive', 'restricted_stock', 'director_fees']
- #
- # email features = ['to_messages', 'email_address', 'from_poi_to_this_person', 'from_messages', 'from_this_person_to_poi', 'shared_receipt_with_poi']
-
+# features selected
 features_list = ['poi',
                  'salary',
                  'bonus',
@@ -33,12 +29,17 @@ with open("final_project_dataset.pkl", "r") as data_file:
     data_dict = pickle.load(data_file)
 
 
-# Task 2: Remove outliers
+# Remove outliers
+data_dict.pop('TOTAL', 0)
+data_dict.pop('LOCKHART EUGENE E', 0)
+data_dict.pop('THE TRAVEL AGENCY IN THE PARK', 0)
+
+
 def get_array(data_dict, value):
     return np.array([int(v[value]) for v in data_dict.values() if v[value] != 'NaN'])
 
 
-def clean_outliers(data_dict, feature, percentile):
+def clean_extreme_values(data_dict, feature, percentile):
     """Remove values above and below given percentile"""
     high_threshold = np.percentile(get_array(data_dict, feature), 100 - percentile)
     low_threshold = np.percentile(get_array(data_dict, feature), percentile)
@@ -48,59 +49,54 @@ def clean_outliers(data_dict, feature, percentile):
     return data_dict
 
 for feature in features_list[1:]:
-    data_dict = clean_outliers(data_dict, feature, 2)
+    data_dict = clean_extreme_values(data_dict, feature, 2)
 
-
-# Delete Outliers
-data_dict.pop('TOTAL', 0)
-data_dict.pop('LOCKHART EUGENE E', 0)
-data_dict.pop('THE TRAVEL AGENCY IN THE PARK', 0)
-
-# Task 3: Create new feature(s)
 # Store to my_dataset for easy export below.
 my_dataset = data_dict
 
 # Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys=True)
 labels, features = targetFeatureSplit(data)
+
+
+def doPCA(data, n_components):
+    pca = PCA(n_components=n_components)
+    pca.fit(data)
+    return pca
+
+pca = doPCA(features, 4)
+features = pca.transform(features)
+
 features_train, features_test, labels_train, labels_test = \
     train_test_split(features, labels, test_size=0.3, random_state=42)
 
-# from sklearn.feature_selection import SelectKBest
-# from sklearn.feature_selection import chi2, f_classif
-# from sklearn import preprocessing
 
-# print(np.array(features_train).shape)
-# # features_train = SelectKBest(f_classif, k=2).fit_transform(features_train, labels_train)
-# features_train = preprocessing.scale(features_train)
-# features_test = preprocessing.scale(features_test)
-# print(features_train)
+def findRandomForestParameters():
+    """
+    Use grid_search to determine parameters for our RandomForestClassifier
+    """
+    clf = RandomForestClassifier(random_state=42)
+    params = {
+        "n_estimators": range(20, 60),
+        "criterion": ["gini", "entropy"],
+        "max_features": range(3, 5),
+        "min_samples_split": range(2, 4),
+        "bootstrap": [True, False]
+    }
+    grid_search = GridSearchCV(clf, params, n_jobs=-1, cv=2)
+    grid_search.fit(features_train, labels_train)
+    print grid_search.best_params_
 
-# Task 4: Try a varity of classifiers
-# Please name your classifier clf for easy export below.
-# Note that if you want to do PCA or other multi-stage operations,
-# you'll need to use Pipelines. For more info:
-# http://scikit-learn.org/stable/modules/pipeline.html
+# Load our classifier with parameters
+# determiend by findRandomForestParameters
+clf = RandomForestClassifier(max_features=3,
+                             min_samples_split=3,
+                             bootstrap=True,
+                             criterion='entropy',
+                             n_estimators=28)
 
-# Provided to give you a starting point. Try a variety of classifiers.
-from sklearn.ensemble import RandomForestClassifier
-clf = RandomForestClassifier(n_estimators=40)
-
-# Task 5: Tune your classifier to achieve better than .3 precision and recall
-# using our testing script. Check the tester.py script in the final project
-# folder for details on the evaluation method, especially the test_classifier
-# function. Because of the small size of the dataset, the script uses
-# stratified shuffle split cross validation. For more info:
-# http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
-
-# Example starting point. Try investigating other evaluation techniques!
-
+# fit our classifier
 clf.fit(features_train, labels_train)
-print(clf.score(features_test, labels_test))
 
-# Task 6: Dump your classifier, dataset, and features_list so anyone can
-# check your results. You do not need to change anything below, but make sure
-# that the version of poi_id.py that you submit can be run on its own and
-# generates the necessary .pkl files for validating your results.
-
+# dump classifier and data
 dump_classifier_and_data(clf, my_dataset, features_list)
