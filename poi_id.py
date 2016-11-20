@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import division
 import os
 import sys
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -51,6 +52,24 @@ def clean_extreme_values(data_dict, feature, percentile):
 for feature in features_list[1:]:
     data_dict = clean_extreme_values(data_dict, feature, 2)
 
+
+# Create new features
+for k, v in data_dict.items():
+    from_poi_to_this_person = v["from_poi_to_this_person"]
+    to_messages = v["to_messages"]
+    from_this_person_to_poi = v["from_this_person_to_poi"]
+    from_messages = v["from_messages"]
+
+    v["from_poi_ratio"] = (float(from_poi_to_this_person) / float(to_messages) if
+                           to_messages not in [0, "NaN"] and from_poi_to_this_person
+                           not in [0, "NaN"] else 0.0)
+    v["to_poi_ratio"] = (float(from_this_person_to_poi) / float(from_messages) if
+                         from_messages not in [0, "NaN"] and from_this_person_to_poi
+                         not in [0, "NaN"] else 0.0)
+
+features_list.append("from_poi_ratio")
+features_list.append("to_poi_ratio")
+
 # Store to my_dataset for easy export below.
 my_dataset = data_dict
 
@@ -94,6 +113,12 @@ clf = RandomForestClassifier(max_features=3,
                              bootstrap=True,
                              criterion='entropy',
                              n_estimators=28)
+# clf = RandomForestClassifier(n_estimators=40)
+
+# from sklearn.naive_bayes import GaussianNB
+# clf = GaussianNB()
+
+
 
 # fit our classifier
 clf.fit(features_train, labels_train)

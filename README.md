@@ -12,7 +12,8 @@ The goal of this project is to use the Enron Email Corpus Dataset and a few othe
 The Enron Email Corpus is one of the biggest dataset of email conversations openly available. It features conversations from executives of the Enron Corporation which were made available by the Federal Energy Regulatory Commission after the company's collapse.
 
 Machine Learning is a good tool for such a project for at least two reasons: The Enron email corpus is a huge dataset: trying to process data and recognize patterns using regular techniques would be long and inefficient.
-Second, we don't really know what we are looking for, should we suspect people with huge bonuses ? A lot of shared receipts with POI ? It's hard to know.
+Second, we don't really know what we are looking for, should we suspect people with huge bonuses ? A lot of shared receipts with POI ? It's hard to know and this is the kind of problem at which ML is good.
+
 While preparing the dataset for the project I was able to identify a few outliers using data visualization and decided to use a script to remove other extreme values from the data (top and below 2 percentiles).
 
 
@@ -27,20 +28,22 @@ In my POI identify I ended up using a mix of financial and email features:
 - from_this_person_to_poi (Email)
 - shared_receipt_with_poi (Email)
 
-I ran a RandomForest Classifier and checking the score after adding and removing different features.
+I ran a simple decision tree and checked the score after adding and removing different features.
 
-I tried feature scaling like standardization using scikit learn StandardScaler but did not gain precision, I however did gain a little precision using PCA with 4 components.
+I tried feature scaling like standardization using scikit learn StandardScaler but did not gain precision, I however did gain a little precision using PCA with 4 components, which I decided to use for the final classifier.
 
+I created two features from_poi_ratio and to_poi_ratio which are respectively the fraction of messages received from POI among all messages received and the fraction of messages send to POI among all messages send.
 
 **3. What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?  [relevant rubric item: “pick an algorithm”]
 What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm? (Some algorithms do not have parameters that you need to tune -- if this is the case for the one you picked, identify and briefly explain how you would have done it for the model that was not your final choice or a different model that does utilize parameter tuning, e.g. a decision tree classifier).  [relevant rubric item: “tune the algorithm”]
 What is validation, and what’s a classic mistake you can make if you do it wrong? How did you validate your analysis?  [relevant rubric item: “validation strategy”]**
 
-I ended up using a RandomForestClassifier. I picked this one after trying many other classifiers like Adaboost, SVM, KNN with different parameters. The average performance of RandomForest was always better.
+I ended up using a RandomForestClassifier. I picked this one after trying many other classifiers including Adaboost, SVM, KNN with different parameters. The average performance of RandomForest was nearly always better.
+To choose which parameters to use in the classifier I used GridSearchCV.
 
-To choose which parameters to use in the classifier I use GridSearchCV.
 
 **4. Give at least 2 evaluation metrics and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance. [relevant rubric item: “usage of evaluation metrics”]**
 
-Average accuracy: 0.83
-Average precision: 0.37
+I choosed precision and recall as reference metrics.
+Average precision: 0.37, which means 37% of people who are predicted as POI are really POI.
+Average recall: 0.08, (true positive rate) means that among the POI, 8% are identified by our classifier.
