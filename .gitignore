@@ -1,8 +1,5 @@
-
 *.txt
-
 *.com
-
-enron61702insiderpay.pdf
-
 *.pyc
+
+.ipynb_checkpoints/poi_id-checkpoint.ipynb
