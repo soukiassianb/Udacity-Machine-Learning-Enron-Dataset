@@ -4,7 +4,7 @@
 
 **1. Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?  [relevant rubric items: “data exploration”, “outlier investigation”]**
 
-The goal of this project is to use the Enron Email Corpus Dataset and a few other data sources to build a Machine Learning Algorithm able to identify persons of interest (POI) in the Enron Scandal.
+The goal of this project is to use the Enron Email Corpus Dataset and related financial data to build a Machine Learning Algorithm able to identify persons of interest (POI) in the Enron Scandal.
 
 The Enron Email Corpus is one of the biggest dataset of email conversations openly available. It features conversations from executives of the Enron Corporation which were made available by the Federal Energy Regulatory Commission after the company's collapse.
 
@@ -53,6 +53,7 @@ The answer to those problems is validation. The goal of validation is to give an
 In our case, we use StratifiedShuffleSplit to split the data into randomized folds (subsets of our datasets) that preserve the percentage of samples for each class.
 We fit our grid search and use the resulting best parameters within the pipeline.
 We use the pipeline as the final model. The scoring validation was made using a classification_report with our test data and predictions from test features. as well as using the final `tester.py` file.
+
 
 **4. Give at least 2 evaluation metrics and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance. [relevant rubric item: “usage of evaluation metrics”]**
 
