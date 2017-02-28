@@ -55,7 +55,7 @@ We fit our grid search and use the resulting best parameters within the pipeline
 We use the pipeline as the final model. The scoring validation was made using a classification_report with our test data and predictions from test features. as well as using the final `tester.py` file.
 
 
-**4. Give at least 2 evaluation metrics and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance. [relevant rubric item: “usage of evaluation metrics”]**
+**4. Give at least 2 evaluation metrics and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance.**
 
 I chose precision and recall as reference metrics.
 Average precision: 0.348, which means 34.8% of people who are predicted as POI are really POI.
